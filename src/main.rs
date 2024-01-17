@@ -48,12 +48,7 @@ async fn main() -> Result<()> {
         }
     }
 
-    for hour in calc_prices.iter().take(10) {
-        println!("{} - {} - {}", hour.valid_from, hour.valid_to, hour.price);
-    }
-
-    // usize to float
-
+    calc_prices.truncate(10);
 
     let avg = calc_prices.iter().map(|x| x.price).sum::<f32>() / calc_prices.len() as f32;
 
