@@ -1,0 +1,15 @@
+[package]
+name = "powerslave"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0", features = [] }
+reqwest = { version = "0.11", features = ["json"] }
+tokio = { version = "1.35.1", features = ["rt", "rt-multi-thread", "macros"] }
+error-chain = "0.12.4"
+chrono = { version = "0.4.31", features = ["serde"] }
+colored = "2.1.0"
