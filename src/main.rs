@@ -30,13 +30,16 @@ async fn main() -> Result<()> {
     let tomorrow = now + chrono::Duration::days(1);
     let url_tomorrow = format!("https://www.hvakosterstrommen.no/api/v1/prices/{}/{}-{}_NO3.json", tomorrow.year(), format!("{:02}", tomorrow.month()), format!("{:02}", tomorrow.day()));
 
+    //    println!("{}", url_today);
+    //    println!("{}", url_tomorrow);
+
     let res = reqwest::get(url_today).await?;
     let today_prices = res.text().await?;
     let mut prices: Vec<TimePris> = serde_json::from_str(today_prices.as_str()).expect("JSON was not well-formatted");
 
     let res = reqwest::get(url_tomorrow).await?;
     let tomorrow_prices = res.text().await?;
-    let mut tomorrow: Vec<TimePris> = serde_json::from_str(tomorrow_prices.as_str()).expect("JSON was not well-formatted");
+    let mut tomorrow: Vec<TimePris> = serde_json::from_str(tomorrow_prices.as_str()).unwrap_or(Vec::new());
 
     // merge today and tomorrow vecs
     prices.append(&mut tomorrow);
@@ -48,16 +51,16 @@ async fn main() -> Result<()> {
         }
     }
 
-    calc_prices.truncate(10);
+    calc_prices.truncate(5);
 
     let avg = calc_prices.iter().map(|x| x.price).sum::<f32>() / calc_prices.len() as f32;
 
     if avg < 0.5 {
-        println!("Average price the next 10 hours: {}", avg.to_string().bold().green());
+        println!("Average price the next 5 hours: {}", avg.to_string().bold().green());
     } else if avg < 0.8 {
-        println!("Average price the next 10 hours: {}", avg.to_string().yellow());
+        println!("Average price the next 5 hours: {}", avg.to_string().yellow());
     } else {
-        println!("Average price the next 10 hours: {}", avg.to_string().bold().red());
+        println!("Average price the next 5 hours: {}", avg.to_string().bold().red());
     }
 
     Ok(())
